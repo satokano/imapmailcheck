@@ -1,9 +1,7 @@
-/*
-ŒvZ‹@ƒvƒƒOƒ‰ƒ~ƒ“ƒOÅI‰Û‘è
-
-IMAP‚Ìƒ[ƒ‹ƒT[ƒo[‚Éˆê’èŠÔ‚²‚Æ‚ÉƒAƒNƒZƒX‚µ‚ÄV’…ƒ[ƒ‹‚Ì—L–³‚ğŠm‚©‚ß‚éƒvƒƒOƒ‰ƒ€
-``GUI•”•ª``
-*/
+/**
+ * IMAPã®ãƒ¡ãƒ¼ãƒ«ã‚µãƒ¼ãƒãƒ¼ã«ä¸€å®šæ™‚é–“ã”ã¨ã«ã‚¢ã‚¯ã‚»ã‚¹ã—ã¦æ–°ç€ãƒ¡ãƒ¼ãƒ«ã®æœ‰ç„¡ã‚’ç¢ºã‹ã‚ã‚‹ãƒ—ãƒ­ã‚°ãƒ©ãƒ 
+ * ï½ï½GUIéƒ¨åˆ†ï½ï½
+ */
 
 
 import java.awt.*;
@@ -23,7 +21,7 @@ public class MailCheckGUI extends JFrame implements ActionListener {
         super("IMAP Mail Check");
         mp = new MainPanel();
 
-        //ƒƒjƒ…[‚ğ‚Â‚­‚é
+        //ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’ã¤ãã‚‹
         JMenuBar mbar = new JMenuBar();
         JMenu mcommand = new JMenu("File");
         pref = new JMenuItem("Preferences");
@@ -38,7 +36,7 @@ public class MailCheckGUI extends JFrame implements ActionListener {
 
         addWindowListener(new WindowAdapter() {
             public void windowClosing (WindowEvent we) {
-            //ƒEƒCƒ“ƒhƒE‚ğ•Â‚¶‚½‚çI—¹‚³‚¹‚é
+            //ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚’é–‰ã˜ãŸã‚‰çµ‚äº†ã•ã›ã‚‹
                 System.exit(0);
             }
         });
@@ -54,12 +52,12 @@ public class MailCheckGUI extends JFrame implements ActionListener {
 
     public void actionPerformed (ActionEvent ae) {
         if (ae.getSource() == quit) {
-        //ƒƒjƒ…[‚ÅQuit‚ª‰Ÿ‚³‚ê‚½‚Æ‚«
+        //ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã§QuitãŒæŠ¼ã•ã‚ŒãŸã¨ã
             System.exit(0);
         } else if (ae.getSource() == pref) {
-        //Preferrences‚ª‰Ÿ‚³‚ê‚½‚Æ‚«
+        //PreferrencesãŒæŠ¼ã•ã‚ŒãŸã¨ã
             SubWindow sw = new SubWindow();
-            //‚·‚Å‚Éˆê“xİ’è‚³‚ê‚Ä‚¢‚é‚Æ‚«‚Í‚»‚Ìİ’è‚ğ•\¦‚·‚é
+            //ã™ã§ã«ä¸€åº¦è¨­å®šã•ã‚Œã¦ã„ã‚‹ã¨ãã¯ãã®è¨­å®šã‚’è¡¨ç¤ºã™ã‚‹
             if (mc.Server != "") {
                 sw.txtServer.setText(mc.Server);
             }            
@@ -77,11 +75,11 @@ public class MailCheckGUI extends JFrame implements ActionListener {
     }
 
 class MainPanel extends JPanel {
-    //V’…‚ª‚ ‚é‚Æ‚«‚ÌƒAƒCƒRƒ“
+    //æ–°ç€ãŒã‚ã‚‹ã¨ãã®ã‚¢ã‚¤ã‚³ãƒ³
     Image mail1;
-    //‚È‚¢‚Æ‚«‚ÌƒAƒCƒRƒ“
+    //ãªã„ã¨ãã®ã‚¢ã‚¤ã‚³ãƒ³
     Image mail2;
-    //Œ»İ‚ÌƒAƒCƒRƒ“
+    //ç¾åœ¨ã®ã‚¢ã‚¤ã‚³ãƒ³
     Image CurrentImage;
 
     int All;
@@ -92,16 +90,16 @@ class MainPanel extends JPanel {
         Toolkit tk = Toolkit.getDefaultToolkit();
         mail1 = tk.getImage("MAIL1.GIF");
         mail2 = tk.getImage("MAIL2.GIF");
-        //‚Í‚¶‚ß‚ÍV’…‚ª‚È‚¢‚±‚Æ‚É‚·‚é
+        //ã¯ã˜ã‚ã¯æ–°ç€ãŒãªã„ã“ã¨ã«ã™ã‚‹
         CurrentImage = mail2;
     }
 
     public void ChangeGraphics (int n, int AllMsg, int RecentMsg) {
         if (n == 1) {
-        //V’…‚ª‚ ‚é‚Æ‚«
+        //æ–°ç€ãŒã‚ã‚‹ã¨ã
             CurrentImage = mail1;
         } else if (n == 0)  {
-        //‚È‚¢‚Æ‚«
+        //ãªã„ã¨ã
             CurrentImage = mail2;
         }
         All = AllMsg;
@@ -114,7 +112,7 @@ class MainPanel extends JPanel {
         g.drawImage(CurrentImage, 0, 0, this);
         g.drawString("All:" + All + " Recent:" + Recent, 5, 95);
     }
-}//MainPanel‚ÌI‚í‚è
+}//MainPanelã®çµ‚ã‚ã‚Š
 
 class SubWindow extends JFrame implements ActionListener {
     JButton btnOK;
@@ -127,9 +125,9 @@ class SubWindow extends JFrame implements ActionListener {
 
     SubWindow () {
         setSize(300, 200);
-        setTitle("ƒ[ƒ‹ƒT[ƒo[‚Ìİ’è");
+        setTitle("ãƒ¡ãƒ¼ãƒ«ã‚µãƒ¼ãƒãƒ¼ã®è¨­å®š");
 
-        //ƒT[ƒo[‚Æƒ|[ƒg‚Ìİ’è
+        //ã‚µãƒ¼ãƒãƒ¼ã¨ãƒãƒ¼ãƒˆã®è¨­å®š
         JPanel p1 = new JPanel();
         JLabel lbl1 = new JLabel("Server : ");
         txtServer = new JTextField("mail.ecc.u-tokyo.ac.jp");
@@ -140,21 +138,21 @@ class SubWindow extends JFrame implements ActionListener {
         p1.add(lbl2);
         p1.add(txtPort);
 
-        //ƒ†[ƒU[–¼‚Ìİ’è
+        //ãƒ¦ãƒ¼ã‚¶ãƒ¼åã®è¨­å®š
         JPanel p2 = new JPanel();
         JLabel lbl3 = new JLabel("UserName : ");
         txtUserName = new JTextField(10);
         p2.add(lbl3);
         p2.add(txtUserName);
 
-        //ƒpƒXƒ[ƒh‚Ìİ’è
+        //ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã®è¨­å®š
         JPanel p3 = new JPanel();
         JLabel lbl4 = new JLabel("Password : ");
         txtPassword = new JPasswordField(16);
         p3.add(lbl4);
         p3.add(txtPassword);
 
-        //ƒ`ƒFƒbƒN‚·‚éŠÔŠu‚Ìİ’è
+        //ãƒã‚§ãƒƒã‚¯ã™ã‚‹é–“éš”ã®è¨­å®š
         JPanel p4 = new JPanel();
         JLabel lbl5 = new JLabel("Interval(min) : ");
         txtInterval = new JTextField("5", 2);
@@ -178,13 +176,13 @@ class SubWindow extends JFrame implements ActionListener {
     }
     public void actionPerformed (ActionEvent ae) {
         if (ae.getSource() == btnOK) {
-        //OKƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚Æ‚«‚Íİ’è‚ğ•Û‘¶‚µ‚ÄƒEƒCƒ“ƒhƒE‚ğ•Â‚¶‚é
+        //OKãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã¨ãã¯è¨­å®šã‚’ä¿å­˜ã—ã¦ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚’é–‰ã˜ã‚‹
             mc.setOption(txtServer.getText(), txtUserName.getText(), new String(txtPassword.getPassword()), Integer.parseInt(txtPort.getText()), Integer.parseInt(txtInterval.getText()));
             dispose();
         } else if (ae.getSource() == btnCancel) {
-        //Cancelƒ{ƒ^ƒ“‚Ì‚Íİ’è‚ğ”½‰f‚¹‚¸‚É•Â‚¶‚é
+        //Cancelãƒœã‚¿ãƒ³ã®æ™‚ã¯è¨­å®šã‚’åæ˜ ã›ãšã«é–‰ã˜ã‚‹
             dispose();
         }
     }
-}//SubWindow‚ÌI‚í‚è
-}//MailCheckGUI‚ÌI‚í‚è
+}//SubWindowã®çµ‚ã‚ã‚Š
+}//MailCheckGUIã®çµ‚ã‚ã‚Š

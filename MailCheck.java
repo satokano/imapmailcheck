@@ -1,31 +1,28 @@
-/*
-·×»»µ¡¥×¥í¥°¥é¥ß¥ó¥°ºÇ½ª²İÂê
-
-IMAP¤Î¥á¡¼¥ë¥µ¡¼¥Ğ¡¼¤Ë°ìÄê»ş´Ö¤´¤È¤Ë¥¢¥¯¥»¥¹¤·¤Æ¿·Ãå¥á¡¼¥ë¤ÎÍ­Ìµ¤ò³Î¤«¤á¤ë¥×¥í¥°¥é¥à
-¡Á¡Á¥í¥¸¥Ã¥¯ÉôÊ¬¡Á¡Á
-
-*/
-
+/**
+ * IMAPã®ãƒ¡ãƒ¼ãƒ«ã‚µãƒ¼ãƒãƒ¼ã«ä¸€å®šæ™‚é–“ã”ã¨ã«ã‚¢ã‚¯ã‚»ã‚¹ã—ã¦æ–°ç€ãƒ¡ãƒ¼ãƒ«ã®æœ‰ç„¡ã‚’ç¢ºã‹ã‚ã‚‹ãƒ—ãƒ­ã‚°ãƒ©ãƒ 
+ * ï½ï½ãƒ­ã‚¸ãƒƒã‚¯éƒ¨åˆ†ï½ï½
+ * 
+ */
 
 import java.net.*;
 import java.io.*;
 
-//¥µ¡¼¥Ğ¡¼¤«¤é¼õ¿®¤·¤¿¥Ç¡¼¥¿¤òÊ¬ÀÏ¤¹¤ë¤È¤­¤Ë»È¤¦
+//ã‚µãƒ¼ãƒãƒ¼ã‹ã‚‰å—ä¿¡ã—ãŸãƒ‡ãƒ¼ã‚¿ã‚’åˆ†æã™ã‚‹ã¨ãã«ä½¿ã†
 import java.util.StringTokenizer;
 
-//°ìÄê»ş´Ö¤´¤È¤Ë¥µ¡¼¥Ğ¡¼¤Ë¥í¥°¥¤¥ó¤·¤Æ¥Á¥§¥Ã¥¯¤¹¤ë¤Î¤ÇRunnable¤òimplement¤¹¤ë
+//ä¸€å®šæ™‚é–“ã”ã¨ã«ã‚µãƒ¼ãƒãƒ¼ã«ãƒ­ã‚°ã‚¤ãƒ³ã—ã¦ãƒã‚§ãƒƒã‚¯ã™ã‚‹ã®ã§Runnableã‚’implementã™ã‚‹
 public class MailCheck implements Runnable {
     Socket sock;
     BufferedReader in;
     PrintWriter out;
 
-    //ºî¶È¤¬¤É¤³¤Ş¤Ç¿Ê¤ó¤À¤«µ­²±¤¹¤ëÈÖ¹æ
+    //ä½œæ¥­ãŒã©ã“ã¾ã§é€²ã‚“ã ã‹è¨˜æ†¶ã™ã‚‹ç•ªå·
     int StatusNumber;
 
-    //tag¤ÎÈÖ¹æ¡£¥µ¡¼¥Ğ¡¼¤Ë¥³¥Ş¥ó¥É¤òÁ÷¿®¤¹¤ë¤È¤­,É¬¤ºÀèÆ¬¤ËTag¤ò¤Ä¤±¤Ê¤±¤ì¤Ğ¤¤¤±¤Ê¤¤
+    //tagã®ç•ªå·ã€‚ã‚µãƒ¼ãƒãƒ¼ã«ã‚³ãƒãƒ³ãƒ‰ã‚’é€ä¿¡ã™ã‚‹ã¨ã,å¿…ãšå…ˆé ­ã«Tagã‚’ã¤ã‘ãªã‘ã‚Œã°ã„ã‘ãªã„
     int TagNumber;
 
-    //IMAP¥µ¡¼¥Ğ¡¼¤ËÁ÷¿®¤¹¤ëÊ¸»úÎó
+    //IMAPã‚µãƒ¼ãƒãƒ¼ã«é€ä¿¡ã™ã‚‹æ–‡å­—åˆ—
     String SendString = "";
 
     //public String UserName;
@@ -35,106 +32,105 @@ public class MailCheck implements Runnable {
     public int Port;
     public int Interval;
 
-    //°ìÄê»ş´Ö¤´¤È¤Ë¥Á¥§¥Ã¥¯¤¹¤ë¤¿¤á¤Ë¥¹¥ì¥Ã¥É¤òºî¤ë
+    //ä¸€å®šæ™‚é–“ã”ã¨ã«ãƒã‚§ãƒƒã‚¯ã™ã‚‹ãŸã‚ã«ã‚¹ãƒ¬ãƒƒãƒ‰ã‚’ä½œã‚‹
     Thread th;
 
     MailCheck (String tempServer, String tempUserName, String tempPassword, int tempPort, int tempInterval) {
-        //ºÇ½é¤Î¾õÂÖ¤Ï0
+        //æœ€åˆã®çŠ¶æ…‹ã¯0
         StatusNumber = 0;
 
-        //¥æ¡¼¥¶¡¼Ì¾¤È¥Ñ¥¹¥ï¡¼¥É
+        //ãƒ¦ãƒ¼ã‚¶ãƒ¼åã¨ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰
         UserName = tempUserName;
         Password = tempPassword;
 
-        //Âç³Ø¤Î¥µ¡¼¥Ğ¡¼¤Ë¥¢¥¯¥»¥¹¤¹¤ë¤È¤­ÉáÄÌ¤Ïmail.ecc.u-tokyo.ac.jp¤È¤¹¤ì¤Ğ¤è¤¤
-        //¤¿¤À¤·¼«Âğ¤Çstone·ĞÍ³¤Ç»È¤¦¤È¤­¤Ïlocalhost¤Ë¤¹¤ë
+        // mail.ecc.u-tokyo.ac.jpã¨ã‹
         Server = tempServer;
 
-        //imap¤Ï143ÈÖ
-        //¤¿¤À¤·²È¤Çstone¤ò»È¤Ã¤ÆÀÜÂ³¤¹¤ë¤È¤­¤Ï993ÈÖ
+        //imapã¯143ç•ª
+        //ãŸã ã—å®¶ã§stoneã‚’ä½¿ã£ã¦æ¥ç¶šã™ã‚‹ã¨ãã¯993ç•ª
         Port = tempPort;
 
-        //¿·Ãå¤ò¥Á¥§¥Ã¥¯¤¹¤ë´Ö³Ö
+        //æ–°ç€ã‚’ãƒã‚§ãƒƒã‚¯ã™ã‚‹é–“éš”
         Interval = tempInterval;
 
-        //Interval¤Ç»ØÄê¤µ¤ì¤¿´Ö³Ö¤´¤È¤Ë¥Á¥§¥Ã¥¯¤¹¤ë¤¿¤á¥¹¥ì¥Ã¥É¤ò¤Ä¤¯¤ë
+        //Intervalã§æŒ‡å®šã•ã‚ŒãŸé–“éš”ã”ã¨ã«ãƒã‚§ãƒƒã‚¯ã™ã‚‹ãŸã‚ã‚¹ãƒ¬ãƒƒãƒ‰ã‚’ã¤ãã‚‹
         th = new Thread(this);
     }
 
-    //°ìÄê»ş´Ö¤´¤È¤Ë¿·Ãå¥á¡¼¥ë¤ÎÍ­Ìµ¤ò³Î¤«¤á¤ë¥µ¥Ö¥ë¡¼¥Á¥ó
+    //ä¸€å®šæ™‚é–“ã”ã¨ã«æ–°ç€ãƒ¡ãƒ¼ãƒ«ã®æœ‰ç„¡ã‚’ç¢ºã‹ã‚ã‚‹ã‚µãƒ–ãƒ«ãƒ¼ãƒãƒ³
     public void run () {
         while (true) {
             try {
-                //IntervalÊ¬¤À¤±¥¹¥ê¡¼¥×
+                //Intervalåˆ†ã ã‘ã‚¹ãƒªãƒ¼ãƒ—
                 Thread.sleep(Interval * 60000L);
             } catch (InterruptedException ie) {
-                System.out.println("¿·Ãå¥Á¥§¥Ã¥¯Ãæ¤ÎInterruptedException");
+                System.out.println("æ–°ç€ãƒã‚§ãƒƒã‚¯ä¸­ã®InterruptedException");
             }
             try {
-                //imap¥µ¡¼¥Ğ¤ÈÄÌ¿®¤¹¤ë¤¿¤á¤Î¥½¥±¥Ã¥È
+                //imapã‚µãƒ¼ãƒã¨é€šä¿¡ã™ã‚‹ãŸã‚ã®ã‚½ã‚±ãƒƒãƒˆ
                 sock = new Socket(Server, Port);
             } catch (UnknownHostException uhe) {
-                System.out.println("¥Û¥¹¥È¤¬¸«¤Ä¤«¤ê¤Ş¤»¤ó");
+                System.out.println("ãƒ›ã‚¹ãƒˆãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“");
                 System.exit(1);
             } catch (IOException ioe) {
-                System.out.println("¥½¥±¥Ã¥È¤òºî¤ë¤È¤­¤ÎIOException¤Ç¤¹");
+                System.out.println("ã‚½ã‚±ãƒƒãƒˆã‚’ä½œã‚‹ã¨ãã®IOExceptionã§ã™");
                 System.exit(1);
             }
 
             try {
-                //ºîÀ®¤·¤¿¥½¥±¥Ã¥È¤«¤éÆşÎÏÍÑ¤Î¥¹¥È¥ê¡¼¥à¤òºîÀ®
+                //ä½œæˆã—ãŸã‚½ã‚±ãƒƒãƒˆã‹ã‚‰å…¥åŠ›ç”¨ã®ã‚¹ãƒˆãƒªãƒ¼ãƒ ã‚’ä½œæˆ
                 in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
-                //ºîÀ®¤·¤¿¥½¥±¥Ã¥È¤«¤é½ĞÎÏÍÑ¤Î¥¹¥È¥ê¡¼¥à¤òºîÀ®¡Ê¼«Æ°Åª¤Ëflush¤¹¤ë¡Ë
+                //ä½œæˆã—ãŸã‚½ã‚±ãƒƒãƒˆã‹ã‚‰å‡ºåŠ›ç”¨ã®ã‚¹ãƒˆãƒªãƒ¼ãƒ ã‚’ä½œæˆï¼ˆè‡ªå‹•çš„ã«flushã™ã‚‹ï¼‰
                 out = new PrintWriter(sock.getOutputStream(), true);
             } catch (IOException ioe) {
-                System.out.println("¥½¥±¥Ã¥È¤«¤é¥¹¥È¥ê¡¼¥à¤òºî¤ë¤È¤­¤ÎIOException¤Ç¤¹");
+                System.out.println("ã‚½ã‚±ãƒƒãƒˆã‹ã‚‰ã‚¹ãƒˆãƒªãƒ¼ãƒ ã‚’ä½œã‚‹ã¨ãã®IOExceptionã§ã™");
                 System.exit(1);
             }
 
-            //IMAP¥µ¡¼¥Ğ¡¼¤«¤éÁ÷¤é¤ì¤Æ¤¯¤ë¥Ç¡¼¥¿¤ò¼õ¿®¤¹¤ë¥¹¥ì¥Ã¥É
+            //IMAPã‚µãƒ¼ãƒãƒ¼ã‹ã‚‰é€ã‚‰ã‚Œã¦ãã‚‹ãƒ‡ãƒ¼ã‚¿ã‚’å—ä¿¡ã™ã‚‹ã‚¹ãƒ¬ãƒƒãƒ‰
             ListeningThread thInput = new ListeningThread(in);
             thInput.start();
         }
     }
 
-    //¸½ºß¤Î¾õÂÖ¤Ë±ş¤¸¤ÆÅ¬ÀÚ¤Ê¥³¥Ş¥ó¥É¤òÁ÷¿®¤¹¤ë
+    //ç¾åœ¨ã®çŠ¶æ…‹ã«å¿œã˜ã¦é©åˆ‡ãªã‚³ãƒãƒ³ãƒ‰ã‚’é€ä¿¡ã™ã‚‹
     public void SendCommand () {
         switch (StatusNumber) {
-        //¤Ş¤º¥í¥°¥¤¥ó
+        //ã¾ãšãƒ­ã‚°ã‚¤ãƒ³
         case 1:
             SendString = getTag() + " LOGIN " + UserName + " " + Password;
             StatusNumber++;
             break;
-        //¥á¡¼¥ë¥Ü¥Ã¥¯¥¹¤ÎINBOX¤òRead-only¤ÇÁªÂò¤¹¤ë
+        //ãƒ¡ãƒ¼ãƒ«ãƒœãƒƒã‚¯ã‚¹ã®INBOXã‚’Read-onlyã§é¸æŠã™ã‚‹
         case 3:
             SendString = getTag() + " EXAMINE \"INBOX\"";
             StatusNumber++;
             break;
-        //Á´¥á¥Ã¥»¡¼¥¸¿ô¤È¿·Ãå¥á¥Ã¥»¡¼¥¸¿ô¤ò¼èÆÀ¤¹¤ë
+        //å…¨ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸æ•°ã¨æ–°ç€ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸æ•°ã‚’å–å¾—ã™ã‚‹
         case 5:
-            //RECENT¤ò»È¤¦¤«UNSEEN¤ò»È¤¦¤«ÌÂ¤Ã¤¿¤¬¡¢UNSEEN¤Ë¤·¤¿
+            //RECENTã‚’ä½¿ã†ã‹UNSEENã‚’ä½¿ã†ã‹è¿·ã£ãŸãŒã€UNSEENã«ã—ãŸ
             SendString = getTag() + " STATUS \"INBOX\" (MESSAGES UNSEEN)";
             StatusNumber++;
             break;
-        //¥í¥°¥¢¥¦¥È¤¹¤ë
+        //ãƒ­ã‚°ã‚¢ã‚¦ãƒˆã™ã‚‹
         case 7:
             SendString = getTag() + " LOGOUT";
             StatusNumber++;
             break;    
         }
         out.println(SendString);
-        //¥Ç¥Ğ¥Ã¥°¤¹¤ë¤È¤­¤Ï¤³¤³¤Î¥³¥á¥ó¥È¤ò¤Ï¤º¤¹¤È¥µ¡¼¥Ğ¡¼¤È¤Î¤ä¤ê¼è¤ê¤¬É½¼¨¤µ¤ì¤ë
+        //ãƒ‡ãƒãƒƒã‚°ã™ã‚‹ã¨ãã¯ã“ã“ã®ã‚³ãƒ¡ãƒ³ãƒˆã‚’ã¯ãšã™ã¨ã‚µãƒ¼ãƒãƒ¼ã¨ã®ã‚„ã‚Šå–ã‚ŠãŒè¡¨ç¤ºã•ã‚Œã‚‹
         //System.out.println(SendString);
     }
         
-    //tag¤Ïso¤Î¤¢¤È¤Ë¿ô»ú¤ò¤Ä¤±¤¿¤â¤Î¡¢¤È¤¤¤¦¤³¤È¤Ë¤¹¤ë
+    //tagã¯soã®ã‚ã¨ã«æ•°å­—ã‚’ã¤ã‘ãŸã‚‚ã®ã€ã¨ã„ã†ã“ã¨ã«ã™ã‚‹
     private String getTag() {
         TagNumber++;
         return "so" + Integer.toString(TagNumber);
     }
 
-    //¥µ¡¼¥Ğ¡¼¤ä¥æ¡¼¥¶¡¼Ì¾¤Ê¤É¤òÀßÄê¤¹¤ë
+    //ã‚µãƒ¼ãƒãƒ¼ã‚„ãƒ¦ãƒ¼ã‚¶ãƒ¼åãªã©ã‚’è¨­å®šã™ã‚‹
     public void setOption (String tempServer, String tempUserName, String tempPassword, int tempPort, int tempInterval) {
         Server = tempServer;
         UserName = tempUserName;
@@ -146,7 +142,7 @@ public class MailCheck implements Runnable {
         }
     }
 
-//¥µ¡¼¥Ğ¡¼¤«¤é¤Î¥Ç¡¼¥¿¤ò¼õ¿®¤¹¤ë¥¹¥ì¥Ã¥É
+//ã‚µãƒ¼ãƒãƒ¼ã‹ã‚‰ã®ãƒ‡ãƒ¼ã‚¿ã‚’å—ä¿¡ã™ã‚‹ã‚¹ãƒ¬ãƒƒãƒ‰
 class ListeningThread extends Thread {
     BufferedReader is;
 
@@ -155,17 +151,17 @@ class ListeningThread extends Thread {
     }
 
     public void run() {
-        //¼õ¿®¤·¤¿¥Ç¡¼¥¿¤ÎÆâÍÆ¤ò³ÎÇ§¤¹¤ë¤È¤­¤Ë»È¤¦
+        //å—ä¿¡ã—ãŸãƒ‡ãƒ¼ã‚¿ã®å†…å®¹ã‚’ç¢ºèªã™ã‚‹ã¨ãã«ä½¿ã†
         String FirstToken;
         String SecondToken;
-        //MESSAGES¤È¤¤¤¦Ê¸»úÎó¤Î°ÌÃÖ¤òµ­²±¤¹¤ë
+        //MESSAGESã¨ã„ã†æ–‡å­—åˆ—ã®ä½ç½®ã‚’è¨˜æ†¶ã™ã‚‹
         int index1;
-        //UNSEEN¤È¤¤¤¦Ê¸»úÎó¤Î°ÌÃÖ¤òµ­²±¤¹¤ë
+        //UNSEENã¨ã„ã†æ–‡å­—åˆ—ã®ä½ç½®ã‚’è¨˜æ†¶ã™ã‚‹
         int index2;
-        //ºÇ¸å¤Ë¤Ç¤Æ¤¯¤ë)¤Î°ÌÃÖ¤òµ­²±¤¹¤ë
+        //æœ€å¾Œã«ã§ã¦ãã‚‹)ã®ä½ç½®ã‚’è¨˜æ†¶ã™ã‚‹
         int index3;
 
-        //Á´¥á¥Ã¥»¡¼¥¸¿ô¤È¿·Ãå¥á¥Ã¥»¡¼¥¸¿ô¤ò³ÊÇ¼¤¹¤ëÊÑ¿ô
+        //å…¨ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸æ•°ã¨æ–°ç€ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸æ•°ã‚’æ ¼ç´ã™ã‚‹å¤‰æ•°
         int NumOfMsg;
         int NumOfRecent;
 
@@ -174,36 +170,36 @@ class ListeningThread extends Thread {
                 String message = is.readLine();
                 if (message != null) {
 
-                    //¥Ç¥Ğ¥Ã¥°¤¹¤ë¤È¤­¤Ï¤³¤³¤Î¥³¥á¥ó¥È¤ò¤Ï¤º¤¹¤È¥µ¡¼¥Ğ¡¼¤È¤Î¤ä¤ê¼è¤ê¤¬É½¼¨¤µ¤ì¤ë
+                    //ãƒ‡ãƒãƒƒã‚°ã™ã‚‹ã¨ãã¯ã“ã“ã®ã‚³ãƒ¡ãƒ³ãƒˆã‚’ã¯ãšã™ã¨ã‚µãƒ¼ãƒãƒ¼ã¨ã®ã‚„ã‚Šå–ã‚ŠãŒè¡¨ç¤ºã•ã‚Œã‚‹
                     //System.out.println(message);
 
-                    //¼õ¿®¤·¤¿¥Ç¡¼¥¿¤òÈ¾³Ñ¶õÇò¤Ç¶èÀÚ¤ë
+                    //å—ä¿¡ã—ãŸãƒ‡ãƒ¼ã‚¿ã‚’åŠè§’ç©ºç™½ã§åŒºåˆ‡ã‚‹
                     StringTokenizer st = new StringTokenizer(message, " ");
 
 
                     /*
-                    °Ê²¼¤ÎswitchÊ¸Ãæ¤Ç¤Ï¸½ºß¤Î¾õÂÖ¤Ë±ş¤¸¤ÆÅ¬ÀÚ¤Ê¼¡¤Î¥³¥Ş¥ó¥É¤òÁ÷¿®¤·¤Æ¤¤¤ë¡£
-                    ¤³¤³¤Ç¡¢¥µ¡¼¥Ğ¡¼¤«¤é¤Î±şÅú¤Ë¤è¤Ã¤Æ¡¢¥³¥Ş¥ó¥É¤¬À®¸ù¤À¤Ã¤¿¤«¼ºÇÔ¤À¤Ã¤¿¤«È½Äê¤·¤Æ¤¤¤ë¡£
+                    ä»¥ä¸‹ã®switchæ–‡ä¸­ã§ã¯ç¾åœ¨ã®çŠ¶æ…‹ã«å¿œã˜ã¦é©åˆ‡ãªæ¬¡ã®ã‚³ãƒãƒ³ãƒ‰ã‚’é€ä¿¡ã—ã¦ã„ã‚‹ã€‚
+                    ã“ã“ã§ã€ã‚µãƒ¼ãƒãƒ¼ã‹ã‚‰ã®å¿œç­”ã«ã‚ˆã£ã¦ã€ã‚³ãƒãƒ³ãƒ‰ãŒæˆåŠŸã ã£ãŸã‹å¤±æ•—ã ã£ãŸã‹åˆ¤å®šã—ã¦ã„ã‚‹ã€‚
 
-                    ËÜÍè¤Ê¤é¡¢IMAP¤Îµ¬³Ê¤Ë¤·¤¿¤¬¤Ã¤Æ¡¢Îã¤¨¤ĞLOGIN¤Î·ë²Ì¤òÈ½Äê¤¹¤ë¤Ë¤Ï¡¢
-                    ¥µ¡¼¥Ğ¡¼¤«¤é¤Î±şÅú¤¬
-                        "Á°¤ËÁ÷¿®¤·¤¿¥¿¥°" "OK¡¢NO¡¢BAD¤Ê¤É" "¥³¥á¥ó¥È"
-                    ¤È¤Ê¤Ã¤Æ¤¤¤ë¤³¤È¤ò³ÎÇ§¤·¡¢ÆóÈÖÌÜ¤Î¥È¡¼¥¯¥ó¤¬OK¤Ë¤Ê¤Ã¤Æ¤¤¤ì¤ĞÀ®¸ù¡¢¤ÈÈ½Äê¤¹¤ë¤Ù¤­¤Ç¤¢¤ë¡£
-                    ¤·¤«¤·¡¢¤³¤³¤Ç¤Ï¡¢±şÅú¤ÎÃæ¤Ë´Ş¤Ş¤ì¤Æ¤¤¤ë¥È¡¼¥¯¥ó¤òÀÚ¤ê½Ğ¤·¡¢
-                    ¤½¤Î¥È¡¼¥¯¥ó¤ÎÊ¸»ú¿ô¤ò¿ô¤¨¤ÆÈ½Äê¤·¤Æ¤¤¤ë¡£
+                    æœ¬æ¥ãªã‚‰ã€IMAPã®è¦æ ¼ã«ã—ãŸãŒã£ã¦ã€ä¾‹ãˆã°LOGINã®çµæœã‚’åˆ¤å®šã™ã‚‹ã«ã¯ã€
+                    ã‚µãƒ¼ãƒãƒ¼ã‹ã‚‰ã®å¿œç­”ãŒ
+                        "å‰ã«é€ä¿¡ã—ãŸã‚¿ã‚°" "OKã€NOã€BADãªã©" "ã‚³ãƒ¡ãƒ³ãƒˆ"
+                    ã¨ãªã£ã¦ã„ã‚‹ã“ã¨ã‚’ç¢ºèªã—ã€äºŒç•ªç›®ã®ãƒˆãƒ¼ã‚¯ãƒ³ãŒOKã«ãªã£ã¦ã„ã‚Œã°æˆåŠŸã€ã¨åˆ¤å®šã™ã‚‹ã¹ãã§ã‚ã‚‹ã€‚
+                    ã—ã‹ã—ã€ã“ã“ã§ã¯ã€å¿œç­”ã®ä¸­ã«å«ã¾ã‚Œã¦ã„ã‚‹ãƒˆãƒ¼ã‚¯ãƒ³ã‚’åˆ‡ã‚Šå‡ºã—ã€
+                    ãã®ãƒˆãƒ¼ã‚¯ãƒ³ã®æ–‡å­—æ•°ã‚’æ•°ãˆã¦åˆ¤å®šã—ã¦ã„ã‚‹ã€‚
 
-                    ¤³¤ì¤À¤È¸·Ì©¤ÊÈ½Äê¤Ï¤Ç¤­¤Ê¤¤¤¬¡¢¤Ê¤¼¤³¤¦¤·¤¿¤«¤È¤¤¤¦¤È
-                    Îã¤¨¤Ğcase 0¤Î»ş¤Ë
+                    ã“ã‚Œã ã¨å³å¯†ãªåˆ¤å®šã¯ã§ããªã„ãŒã€ãªãœã“ã†ã—ãŸã‹ã¨ã„ã†ã¨
+                    ä¾‹ãˆã°case 0ã®æ™‚ã«
                         st.nextToken() == "*"
-                    ¤È¤¤¤¦¼°¤òÉ¾²Á¤µ¤»¤¿¤È¤­¤Ëtrue¤Ë¤Ê¤é¤º¡¢
-                    false¤Ë¤Ê¤Ã¤Æ¤·¤Ş¤¦¤È¤¤¤¦¸½¾İ¤¬µ¯¤­¤¿¤«¤é¤Ç¤¢¤ë¡£
+                    ã¨ã„ã†å¼ã‚’è©•ä¾¡ã•ã›ãŸã¨ãã«trueã«ãªã‚‰ãšã€
+                    falseã«ãªã£ã¦ã—ã¾ã†ã¨ã„ã†ç¾è±¡ãŒèµ·ããŸã‹ã‚‰ã§ã‚ã‚‹ã€‚
                         System.out.println(st.nextToken().getBytes());
                         System.out.println("*".getBytes());
-                    ¤Ê¤É¤ò»î¤·¤Æ¤ß¤Æ¡¢¼«Ê¬¤Ê¤ê¤Ë¸¶°ø¤òÄ´¤Ù¤¿¤Î¤À¤¬¡¢·ë¶É¤ï¤«¤é¤Ê¤«¤Ã¤¿¡£
+                    ãªã©ã‚’è©¦ã—ã¦ã¿ã¦ã€è‡ªåˆ†ãªã‚Šã«åŸå› ã‚’èª¿ã¹ãŸã®ã ãŒã€çµå±€ã‚ã‹ã‚‰ãªã‹ã£ãŸã€‚
                     */
 
                     switch (StatusNumber) {
-                    //ÀÜÂ³¤¹¤ë¤ÈºÇ½é¤Ë* OK¤Ç¤Ï¤¸¤Ş¤ëÊ¸»úÎó¤¬¤¯¤ë
+                    //æ¥ç¶šã™ã‚‹ã¨æœ€åˆã«* OKã§ã¯ã˜ã¾ã‚‹æ–‡å­—åˆ—ãŒãã‚‹
                     case 0:
                         if (st.nextToken().length() == 1) {
                             StatusNumber++;
@@ -211,24 +207,24 @@ class ListeningThread extends Thread {
                         }
                         break;
 
-                    //LOGIN¤Î·ë²Ì¤¬¤¯¤ë
-                    //À®¸ù¤Ê¤é
+                    //LOGINã®çµæœãŒãã‚‹
+                    //æˆåŠŸãªã‚‰
                     //so1 OK LOGIN completed
-                    //¼ºÇÔ¤Ê¤é
+                    //å¤±æ•—ãªã‚‰
                     //so1 NO Bad LOGIN user name and/or password
                     case 2:
                         if (st.nextToken().length() >= 3 && st.nextToken().length() == 2 && st.nextToken().length() == 5) {
-                        //¤³¤ì¤ÏÀ®¸ù¤Î»ş
+                        //ã“ã‚Œã¯æˆåŠŸã®æ™‚
                             StatusNumber++;
                             SendCommand();
                         } else {
-                        //¼ºÇÔ¤Î»ş
+                        //å¤±æ•—ã®æ™‚
                             System.out.println(message);
                             System.exit(1);
                         }
                         break;
 
-                    //EXAMINE¤Î·ë²Ì¤¬¤¯¤ë
+                    //EXAMINEã®çµæœãŒãã‚‹
                     case 4:
                         if (st.nextToken().length() >= 3) {
                             StatusNumber++;
@@ -236,21 +232,21 @@ class ListeningThread extends Thread {
                         }
                         break;
 
-                    //STATUS¤Î·ë²Ì¤¬¤¯¤ë
-                    //¤³¤³¤ÏÆó²ó¼Â¹Ô¤µ¤ì¤ë¤Ï¤º
+                    //STATUSã®çµæœãŒãã‚‹
+                    //ã“ã“ã¯äºŒå›å®Ÿè¡Œã•ã‚Œã‚‹ã¯ãš
                     case 6:
                         FirstToken = st.nextToken();
-                        //°ìÅÙÌÜ¤Ï¤³¤³¤Ë¤Ï*1Ê¸»ú¤¬Æş¤ë¤Ï¤º
+                        //ä¸€åº¦ç›®ã¯ã“ã“ã«ã¯*1æ–‡å­—ãŒå…¥ã‚‹ã¯ãš
 
                         SecondToken = st.nextToken();
-                        //°ìÅÙÌÜ¤Ï¤³¤³¤Ë¤ÏSTATUS¤È¤¤¤¦6Ê¸»ú¤¬Æş¤ë¤Ï¤º
+                        //ä¸€åº¦ç›®ã¯ã“ã“ã«ã¯STATUSã¨ã„ã†6æ–‡å­—ãŒå…¥ã‚‹ã¯ãš
 
                         if (FirstToken.length() != 1) {
-                        //ÆóÅÙÌÜ¤Ï¤³¤³¤¬¼Â¹Ô¤µ¤ì¤ë¤Ï¤º
+                        //äºŒåº¦ç›®ã¯ã“ã“ãŒå®Ÿè¡Œã•ã‚Œã‚‹ã¯ãš
                             StatusNumber++;
                             SendCommand();
                         } else if (FirstToken.length() == 1 && SecondToken.length() == 6) {
-                        //°ìÅÙÌÜ¤Ï¤³¤³¤¬¼Â¹Ô¤µ¤ì¤ë¤Ï¤º¡£¤³¤³¤ÇÁí¥á¥Ã¥»¡¼¥¸¿ô¤È¿·Ãå¥á¥Ã¥»¡¼¥¸¿ô¤ò¼èÆÀ¤¹¤ë
+                        //ä¸€åº¦ç›®ã¯ã“ã“ãŒå®Ÿè¡Œã•ã‚Œã‚‹ã¯ãšã€‚ã“ã“ã§ç·ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸æ•°ã¨æ–°ç€ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸æ•°ã‚’å–å¾—ã™ã‚‹
                             index1 = message.indexOf("MESSAGES");
                             index2 = message.indexOf("UNSEEN");
                             index3 = message.lastIndexOf(")");
@@ -264,15 +260,15 @@ class ListeningThread extends Thread {
                         }
                         break;
 
-                    //LOGOUT¤Î·ë²Ì¤¬¤¯¤ë
+                    //LOGOUTã®çµæœãŒãã‚‹
                     case 8:
                         if (st.nextToken().length() >= 3) {
-                            //¥½¥±¥Ã¥È¤òÊÄ¤¸¤ë
+                            //ã‚½ã‚±ãƒƒãƒˆã‚’é–‰ã˜ã‚‹
                             in.close();
                             out.close();
                             sock.close();
                         }
-                        //¤Ï¤¸¤á¤Î¾õÂÖ¤ËÌá¤·¤Æ¤ª¤¯
+                        //ã¯ã˜ã‚ã®çŠ¶æ…‹ã«æˆ»ã—ã¦ãŠã
                         StatusNumber = 0;
                         stop();
                         break;
@@ -280,8 +276,8 @@ class ListeningThread extends Thread {
                 }
             }
         } catch (IOException e) {
-            System.out.println("¼õ¿®¥¹¥ì¥Ã¥É¤ÎIOException");
+            System.out.println("å—ä¿¡ã‚¹ãƒ¬ãƒƒãƒ‰ã®IOException");
         }
     }
-}//ListeningThread¤Î½ª¤ï¤ê
-}//MailCheck¤Î½ª¤ï¤ê
+}//ListeningThreadã®çµ‚ã‚ã‚Š
+}//MailCheckã®çµ‚ã‚ã‚Š
